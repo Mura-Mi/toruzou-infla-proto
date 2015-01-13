@@ -1,1 +1,4 @@
 /cookbooks/
+berks-cookbooks/
+.vagrant
+cookbooks/
