@@ -5,12 +5,10 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  # All Vagrant configuration is done here. The most common configuration
-  # options are documented and commented below. For a complete reference,
-  # please see the online documentation at vagrantup.com.
-
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-5.10_chef-provisionerless.box"
+
+  config.omnibus.chef_version = "11.4.0"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -27,9 +25,24 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # some recipes and/or roles.
   #
   config.vm.provision "chef_solo" do |chef|
-    chef.add_recipe "rbenv"
+    chef.add_recipe "vim"
+    chef.add_recipe "python"
+    chef.add_recipe "nodejs::nodejs_from_source"
+    chef.add_recipe "nodejs::npm"
+    chef.add_recipe "rbenv::default"
+    chef.add_recipe "rbenv::ruby_build"
+    chef.add_recipe "passenger_apache2::mod_rails"
     chef.add_recipe "toruzou-cookbook"
-    chef.add_recipe "passenger_apache2"
+
+    chef.json = {
+      nodejs: {
+        install_method: 'source',
+        npm_packages: [
+          { name: 'bower' }
+        ]
+      }
+    }
+
   #   chef.cookbooks_path = "../my-recipes/cookbooks"
   #   chef.roles_path = "../my-recipes/roles"
   #   chef.data_bags_path = "../my-recipes/data_bags"
